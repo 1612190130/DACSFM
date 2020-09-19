@@ -191,37 +191,6 @@ void HierarchicalMapperController::Run() {
   std::cout << StringPrintf("Clusters have %d images", total_num_images)
             << std::endl;
   auto end_sceneclustering = std::chrono::system_clock::now();
-  ////////////////////////////////////////////////////////////////////////////
-  // segmentation manually
-  ////////////////////////////////////////////////////////////////////////////
-  // auto start = std::chrono::system_clock::now();
-  // auto start_sceneclustering = std::chrono::system_clock::now();
-  // std::unordered_map<image_t, std::string> image_id_to_name;
-  // std::vector<const SceneClustering::Cluster*> leaf_clusters;
-  // ClusterSequentialScene(image_id_to_name,leaf_clusters);
-  // auto end_sceneclustering = std::chrono::system_clock::now();
-  ////////////////////////////////////////////////////////////////////////////
-  ///////////////////// BFS clustering scene (useless)////////////////////////
-  ////////////////////////////////////////////////////////////////////////////
-  // std::unordered_map<image_t, std::string> image_id_to_name;
-  // std::vector<SceneClustering> scene_clusterings;
-  // std::vector<const SceneClustering::Cluster*> leaf_clusters;
-  // FilteringAndBFSForCluterScene(image_id_to_name,scene_clusterings);
-  // for(auto& scene_clustering:scene_clusterings){
-  //   auto one_leaf_cluster = scene_clustering.GetLeafClusters();
-  //   leaf_clusters.insert(leaf_clusters.end(), one_leaf_cluster.begin(),one_leaf_cluster.end());
-  // }
-
-  // size_t total_num_images = 0;
-  // for (size_t i = 0; i < leaf_clusters.size(); ++i) {
-  //   total_num_images += leaf_clusters[i]->image_ids.size();
-  //   std::cout << StringPrintf("  Cluster %d with %d images", i + 1,
-  //                             leaf_clusters[i]->image_ids.size())
-  //             << std::endl;
-  // }
-
-  // std::cout << StringPrintf("Clusters have %d images", total_num_images)
-  //           << std::endl;
   ///////////////////////////////////////////////////////////////////////
   // Start reconstructing the bigger clusters first for resource usage.
   /////////////////////////////////////////////////////////////////////
@@ -320,14 +289,7 @@ void HierarchicalMapperController::Run() {
     mapper.Wait();
   };
   
- 
-  
-  ///////////////////////////////////////////////////
-  //  for(auto it=leaf_clusters.begin();it!=leaf_clusters.end();)
-  //  {
-  //    if((*it)->image_ids.size()!=309) leaf_clusters.erase(it);
-  //    else it++;
-  //  }
+
   /////////////////////////////////////////////////////
   // Start the reconstruction workers.
   /////////////////////////////////////////////////////
@@ -376,50 +338,13 @@ void HierarchicalMapperController::Run() {
   auto end_reconstruction = std::chrono::system_clock::now();
   ///////////////////////////////////////////////////
   ///////////////////////////////////////////////////
-  // std::cout<<"first done/////////////\n";
-  // auto sc_tmp1 = FilterImageRegisteredInCluster(leaf_clusters[0],reconstruction_managers.at(leaf_clusters[0]));
-  // //SceneClustering::Cluster sc_tmp;
   
-  // std::cout<<"sc_tmp1.size()"<<sc_tmp1.image_ids.size()<<"\n";
-  // leaf_clusters.push_back(&sc_tmp1);
-  // std::cout<<"thread_pool.Wait();\n";
-  // std::cout<<"second time ///////////////////////";
-  // thread_pool.AddTask(ReconstructCluster, sc_tmp1,
-  //                       &reconstruction_managers[&sc_tmp1]);
-        
-  // thread_pool.Wait();
-
-
-  // std::cout<<"second done/////////////\n";
-  // auto sc_tmp2 = FilterImageRegisteredInCluster(&sc_tmp1,reconstruction_managers.at(&sc_tmp1));
-  // std::cout<<"sc_tmp2.size()"<<sc_tmp2.image_ids.size()<<"\n";
-  // leaf_clusters.push_back(&sc_tmp2);
-  // std::cout<<"thread_pool.Wait();\n";
-  // std::cout<<"third time ///////////////////////";
-  // thread_pool.AddTask(ReconstructCluster, sc_tmp2,
-  //                       &reconstruction_managers[&sc_tmp2]);
-        
-  // thread_pool.Wait();
   /*************************write for debug**********************************/
   std::vector<Reconstruction*> reconstructions;
   std::unordered_map<Reconstruction*,std::string> clusters_name;
   WriteClustersPartition(sub_clusters,image_id_to_name,reconstruction_managers,reconstructions,clusters_name);
 
   /************************************************************************/
-
-  //////////////////////////////////////////////////////////////////////////////
-  // Merge clusters
-  //////////////////////////////////////////////////////////////////////////////
-
-  // PrintHeading1("Merging clusters");
-
-  // DACSFM::MergeClusterswithBA(*scene_clustering.GetRootCluster(), &reconstruction_managers);
-
-  // CHECK_EQ(reconstruction_managers.size(), 1);
-  // *reconstruction_manager_ = std::move(reconstruction_managers.begin()->second);
-
-  // std::cout << std::endl;
-  // GetTimer().PrintMinutes();
 
   //////////////////////////////////////////////////////////////////////////////
   // My Merge clusters

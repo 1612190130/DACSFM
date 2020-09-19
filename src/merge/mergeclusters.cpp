@@ -550,21 +550,7 @@ namespace DACSFM {
 
         std::sort(reconstructions.begin(),reconstructions.end(),cmp);
         PrintHeading2("reconstructions sorted");
-        /*size_t num_recons = reconstructions.size();
-        size_t max_size = 2;
-        size_t recons_erase_index = 0;
-        for(size_t i = 0 ;i<num_recons;i++)
-        {
-            if(recons_erase_index >= max_size)
-            {
-                reconstructions.erase(reconstructions.begin()+recons_erase_index);
-            }
-            else
-            {
-                recons_erase_index++;
-            }
-            
-        }*/
+        
         
         for(size_t i=0;i<reconstructions.size();i++) 
         {
@@ -588,14 +574,7 @@ namespace DACSFM {
         Reconstruction global_reconstruction = *reconstructions[0];
         std::unordered_map<Reconstruction*,SimilarityTransform> srtform_to_maximum;
         std::cout<<"std::unordered_map<Reconstruction*,SimilarityTransform> srtform_to_maximum;"<<"\n";
-        /*for(const auto image_id: reconstructions[0]->RegImageIds())
-        {
-            auto reg_image = reconstructions[0]->Image(image_id);
-            reg_image.SetRegistered(false);
-            //std::cout<<"image.id:"<<image_id<<",image.name "<<reg_image.Name()<<"\n";
-            global_reconstruction.AddImage(reg_image);
-            global_reconstruction.RegisterImage(image_id);
-        }*/
+        
         srtform_to_maximum.insert(std::make_pair(reconstructions[0],SimilarityTransform()));
         is_merged[0] = true;
         int index = 0;
@@ -686,33 +665,13 @@ namespace DACSFM {
 
         OptionManager options;
         options.AddBundleAdjustmentOptions();
-        // invoke BA to obtain the optimal SimilarityTransform.
-        /*{
-            std::vector<Reconstruction*> tmp_reoncs;
-            std::cout<<"///////////////exchange vector except last///////////////";
-            size_t tmp_size = (reconstructions.size()-1);
-            for(size_t i = 0 ; i < tmp_size;i++)
-            {
-                std::cout<<"reconstructions[i]: "<<reconstructions[i]<<"\n";
-                tmp_reoncs.emplace_back(reconstructions[i]);
-                std::cout<<"tmp_reoncs[i]: "<<tmp_reoncs[i]<<"\n";
-            }
-            DACSFM::MyBundleAdjustmentController::Solve(options,tmp_reoncs ,srtform_to_global);
-        }*/
+        
         
         if(mergeoptions_.useba)
         {
             DACSFM::MyBundleAdjustmentController::Solve(options,reconstructions ,srtform_to_maximum);
         }
-        /*for(size_t i = 0 ; i < reconstructions.size();i++)
-        {
-            std::cout<<"BundleAdjustment for Reconstruction "<<i<<"////////////////////////\n";
-            std::vector<Reconstruction*>tmp_recon{reconstructions[i]};
-            DACSFM::MyBundleAdjustmentController::Solve(options,tmp_recon ,srtform_to_global);
-            //BundleAdjustmentController ba_controller(options, reconstructions[i]);
-            //ba_controller.Start();
-            //ba_controller.Wait();
-        }*/
+        
         for(size_t i = 0 ; i < reconstructions.size();i++)
         {
             std::cout<<"Recoonstruction "<<i<<"("<<cluster_name.at(reconstructions[i])<<"):\n"
@@ -753,20 +712,20 @@ namespace DACSFM {
             }
             if(!merge_success) break;
         }
-        /////////////////////////////////
-        //compard with ogba 
-        /////////////////////////////////
-        DACSFM::MyBundleAdjustmentController ba_controller(options, &global_reconstruction);
-        //colmap::BundleAdjustmentController ba_controller(options, &global_reconstruction);
-        ba_controller.Start();
-        ba_controller.Wait();
-        std::cout<<"/////";
-        std::cout<<"after ogba MSE:"<<MeanSquaredErrorByRecons(global_reconstruction)<<"//////\n";
-        std::string ogba_path = JoinPaths(mergeoptions_.output_path,"ogba");
-        CreateDirIfNotExists(ogba_path);
-        global_reconstruction.Write(ogba_path);
-        global_reconstruction.WriteText(ogba_path);
-        WriteKittiPose("pose_ogb.txt",global_reconstruction);
+        // /////////////////////////////////
+        // //compard with ogba 
+        // /////////////////////////////////
+        // DACSFM::MyBundleAdjustmentController ba_controller(options, &global_reconstruction);
+        // //colmap::BundleAdjustmentController ba_controller(options, &global_reconstruction);
+        // ba_controller.Start();
+        // ba_controller.Wait();
+        // std::cout<<"/////";
+        // std::cout<<"after ogba MSE:"<<MeanSquaredErrorByRecons(global_reconstruction)<<"//////\n";
+        // std::string ogba_path = JoinPaths(mergeoptions_.output_path,"ogba");
+        // CreateDirIfNotExists(ogba_path);
+        // global_reconstruction.Write(ogba_path);
+        // global_reconstruction.WriteText(ogba_path);
+        // WriteKittiPose("pose_ogb.txt",global_reconstruction);
 
         ////////////////////////////////////////////
         std::cout<<"/////";
